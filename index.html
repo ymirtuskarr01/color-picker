@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Permissions-Policy" content="idle-detection=(self)">
+    <title>Color Picker</title>
+    <link rel="stylesheet" href="./assets/colorpicker.css">
+    <link rel="stylesheet" href="./assets/toast/toast.css">
+    <script type="module">
+        import ColorPicker from './assets/colorpicker.js';
+        window.addEventListener('DOMContentLoaded', () => {
+            new ColorPicker;
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Color Picker</h1>
+    </header>
+    <main>
+        <section id="upload">
+            <form action="">
+                <fieldset>
+                    <legend>Upload Image: </legend>
+                    <input type="file" id="uploadimage" accept=".jpg, .jpeg, .png" hidden>
+                    <button type="button">Upload Image</button>
+
+                    <div id="loading">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z" /></svg>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
+        <section id="dashboard">
+            <article id="image">
+            </article>
+            <article id="swatches">
+                <ul></ul>
+                <!-- <ul>
+                    <li><div style="background-color: rgb(191, 173, 75);"></div></li>
+                    <li><div style="background-color: rgb(62, 187, 223);"></div></li>
+                    <li><div style="background-color: rgb(4, 112, 149);"></div></li>
+                    <li><div style="background-color: rgb(4, 152, 192);"></div></li>
+                    <li><div style="background-color: rgb(16, 23, 26);"></div></li>
+                    <li><div style="background-color: rgb(89, 63, 4);"></div></li>
+                    <li><div style="background-color: rgb(4, 69, 101);"></div></li>
+                    <li><div style="background-color: rgb(132, 92, 6);"></div></li>
+                    <li><div style="background-color: rgb(122, 108, 20);"></div></li>
+                </ul> -->
+            </article>
+        </section>
+    </main>
+    <footer>
+        <p>Created by <a href="https://github.com/ymirtuskarr01" rel="external" target="_blank">Ymir Tuskarr01</a></p>
+    </footer>
+</body>
+</html>
