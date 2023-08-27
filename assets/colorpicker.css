@@ -165,28 +165,10 @@ footer p{
 } */
 }
 
-.rotate svg {
+#loading img {
     height: 20px;
     width: 20px;
-    animation: rotation 5s infinite linear;
-}
-
-@keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
-    25% {
-        transform: rotate(90deg);
-    }
-    50% {
-        transform: rotate(180deg);
-    }
-    75% {
-        transform: rotate(270deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    opacity: 0;
 }
 
 /* class */

@@ -3,22 +3,29 @@
 import ColorCore from './colorCore.js';
 
 class Image {
+
     constructor() {
         // this.storage = window.localStorage;
         this.extractImageColor = new ColorCore();
-        this.extractImageColor.loadStart();
-        this.isLoading = true;
 
         this.container = document.getElementById("image");
-        this.images = document.getElementsByTagName("img")[0];
+        this.images = document.getElementsByTagName("img")[1];
+        this.loadingElement = document.querySelector("#loading img");
+
+        this.loadStart();
+        // this.start,this.previousTimeStamp;
+        // this.done = false;
+        // this.repeat = true;
 
         this.decomposeImage();
+        this.extractImageColor.decomposeSwatches();
     }
 
     updateImage(input) {
 
         this.newImage = document.createElement("img");
         this.currentFile = input.files;
+        // window.requestAnimationFrame(this.step.bind(this));
 
         // this.getImage(URL.createObjectURL(this.currentFile[0]), (val) => {
         //     this.newImage.src = `${val}#t=${new Date().getTime()}`;
@@ -39,7 +46,11 @@ class Image {
                 }
             )
             .then(this.loadImage.bind(this))
-            .then(this.extractImageColor.loadEnd.bind(this));
+            // .then(this.extractImageColor.loadEnd.bind(this));
+            // .then(this.loadEnd);
+            .then((val) => {
+                if (!val) this.loadEnd();
+            });
     };
 
     decomposeImage() {
@@ -81,6 +92,64 @@ class Image {
             resolve(this.extractImageColor.extractImageColor(this.newImage));
         })
     }
+
+    loadStart() {
+        this.actionOff();
+
+        this.loadingElement.style.opacity = 1;
+    }
+
+    loadEnd() {
+        this.actionOn();
+
+        this.loadingElement.style.opacity = 0;
+    }
+
+    actionOn() {
+        const actionAble = document.querySelectorAll(".actionable");
+
+        for (let action of actionAble) {
+            action.removeAttribute("disabled");
+        }
+    }
+
+    actionOff() {
+        const actionAble = document.querySelectorAll(".actionable");
+
+        for (let action of actionAble) {
+            action.setAttribute("disabled", "disabled");
+        }
+    }
+
+    // step(timeStamp) {
+
+    //     console.log("timestamp: ", timeStamp);
+    //     if (this.start === undefined) {
+    //         this.start = timeStamp;
+    //     }
+
+    //     const elapsed = timeStamp - this.start;
+    //     console.log("elapsed:", elapsed);
+
+    //     if (this.previousTimeStamp !== timeStamp) {
+    //         const count = Math.min(10 * elapsed, 360);
+    //         // this.loadingElement.style.transform = `translateX(${count}px)`;
+    //         this.loadingElement.style.transform = `rotate(${count}deg)`;
+    //         // this.loadingElement.classList.add("rotate");
+    //         if (count === 360) {
+    //             this.done = true;
+    //             // this.loadingElement.classList.remove("rotate");
+    //         }
+    //     }
+
+    //     if (elapsed < 360) {
+    //         this.previousTimeStamp = timeStamp;
+    //         if (!this.done) {
+    //             // window.cancelAnimationFrame(this.step.bind(this));
+    //             window.requestAnimationFrame(this.step.bind(this));
+    //         }
+    //     }
+    // }
 }
 
 export default Image;

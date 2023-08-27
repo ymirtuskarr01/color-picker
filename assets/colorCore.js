@@ -11,8 +11,6 @@ class ColorCore {
     constructor() {
         this.swatches = document.getElementById("swatches");
         this.oldUnorderList = this.swatches.querySelector("ul");
-
-        this.decomposeSwatches();
     }
 
     extractImageColor(receivedImage) {
@@ -108,7 +106,6 @@ class ColorCore {
         const oldUnorderListItem = this.oldUnorderList.querySelectorAll("li");
         if (this.oldUnorderList) {
             for (let listItemRow = oldUnorderListItem.length - 1; listItemRow >= 0; listItemRow--) {
-                console.log(oldUnorderListItem[listItemRow]);
                 this.oldUnorderList.removeChild(oldUnorderListItem[listItemRow]);
             }
             // for (let itemRow of oldUnorderListItem) {
@@ -240,24 +237,6 @@ class ColorCore {
         }, (err) => {
             console.log(`Async: Could not copy text: ${err}`);
         })
-    }
-
-    loadStart() {
-        let loading = document.getElementById("loading");
-        let uploadButton = document.getElementsByTagName("button")[0];
-
-        uploadButton.setAttribute("disabled", "disabled");
-        loading.classList.add("rotate");
-        this.load = true;
-    }
-
-    loadEnd() {
-        let loading = document.getElementById("loading");
-        let uploadButton = document.getElementsByTagName("button")[0];
-
-        uploadButton.removeAttribute("disabled");
-        loading.classList.remove("rotate");
-        this.load = false;
     }
 }
 
