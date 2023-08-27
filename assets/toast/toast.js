@@ -48,6 +48,7 @@ const Toast = text => {
     addToast(toast)
 
     return new Promise(async (resolve, reject) => {
+        // console.log(await Promise.allSettled(toast.getAnimations().map(animation => animation.finished)))
         await Promise.allSettled(
             toast.getAnimations().map(animation =>
                 animation.finished

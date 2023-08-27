@@ -9,14 +9,21 @@ class ColorCore {
     palette = [];
 
     constructor() {
-        this.checkLoading();
+        this.swatches = document.getElementById("swatches");
+        this.oldUnorderList = this.swatches.querySelector("ul");
+
+        this.decomposeSwatches();
     }
 
     extractImageColor(receivedImage) {
-        const imageObj = this.createCanvas(receivedImage);
-        const imageData = imageObj.data;
-        const palette = this.getPalette(imageData);
-        return this.reflectPalette(palette);
+
+        return new Promise((resolve, reject) => {
+            const imageObj = this.createCanvas(receivedImage);
+            const imageData = imageObj.data;
+            const palette = this.getPalette(imageData);
+
+            resolve(this.reflectPalette(palette));
+        });
     }
 
     createCanvas(receivedImage) {
@@ -54,61 +61,96 @@ class ColorCore {
     }
 
     reflectPalette(palette) {
-        const swatches = document.getElementById("swatches");
-        const oldUnorderList = swatches.querySelector("ul");
         const newUnorderList = document.createElement("ul");
 
         // swatches.removeChild(oldUnorderList);
 
-        for (let color in palette) {
-            let newColorList = document.createElement("li");
-            let container = document.createElement("div");
-            let embed = document.createElement("embed");
+        return new Promise((resolve, reject) => {
 
-            let rgbValue = `rgb(${palette[color][0]}, ${palette[color][1]}, ${palette[color][2]})`;
-            container.classList.add("container");
-            embed.title = `Copy ${rgbValue}`;
-            embed.src = "images/content-copy.svg";
-            embed.width = "100%";
-            embed.height = "100%";
-            embed.type = "image/svg+xml";
-            embed.classList.add("emb");
+            for (let color in palette) {
+                let newColorList = document.createElement("li");
+                let container = document.createElement("div");
+                let embed = document.createElement("embed");
 
-            newColorList.style.backgroundColor = rgbValue
+                let rgbValue = `rgb(${palette[color][0]}, ${palette[color][1]}, ${palette[color][2]})`;
 
-            container.appendChild(embed);
-            newColorList.appendChild(container);
-            newUnorderList.appendChild(newColorList);
-        }
-        // swatches.appendChild(newUnorderList);
-        swatches.replaceChild(newUnorderList, oldUnorderList);
+                container.classList.add("container");
+                embed.title = `Copy ${rgbValue}`;
+                embed.src = "images/content-copy.svg";
+                embed.width = "100%";
+                embed.height = "100%";
+                embed.type = "image/svg+xml";
+                embed.classList.add("emb");
 
-        return this.loadSVG();
+                newColorList.style.backgroundColor = rgbValue;
+
+                // this.loadSVG(embed, rgbValue);
+                this.loadSVG(embed, palette[color][0], palette[color][1], palette[color][2]);
+
+                container.appendChild(embed);
+                newColorList.appendChild(container);
+                newUnorderList.appendChild(newColorList);
+
+                if (color == palette.length - 1) {
+                    // this.loadEnd();
+                    const isLoading = false;
+                    resolve(isLoading);
+                }
+            }
+
+            // swatches.appendChild(newUnorderList);
+            this.swatches.replaceChild(newUnorderList, this.oldUnorderList);
+            // return this.loadSVG();
+        });
     }
 
-    loadSVG() {
-        let elms = document.querySelectorAll("#swatches .emb");
-
-        for (let i = 0; i < elms.length; i++) {
-            let parentElm = elms[i].closest("li");
-
-            if (!elms[i].dataset.listenerLoad) {
-                elms[i].dataset.listenerLoad = true;
-
-                elms[i].addEventListener("load", () => {
-                    let style = getComputedStyle(parentElm, "");
-                    var bgColor= style.getPropertyValue("background-color");
-                    let bgColorConvert = this.convertColor(bgColor);
-
-                    this.findSVGElements(elms[i], bgColorConvert);
-                });
+    decomposeSwatches() {
+        const oldUnorderListItem = this.oldUnorderList.querySelectorAll("li");
+        if (this.oldUnorderList) {
+            for (let listItemRow = oldUnorderListItem.length - 1; listItemRow >= 0; listItemRow--) {
+                console.log(oldUnorderListItem[listItemRow]);
+                this.oldUnorderList.removeChild(oldUnorderListItem[listItemRow]);
             }
+            // for (let itemRow of oldUnorderListItem) {
+            //     this.oldUnorderList.removeChild(itemRow);
+            // }
+        }
+    }
 
-            if (i == elms.length - 1) {
-                // this.loadEnd();
-                let isLoading = false;
-                return isLoading;
-            }
+    loadSVG(elms, ...bgColor) {
+        // let elms = document.querySelectorAll("#swatches .emb");
+
+        // for (let i = 0; i < elms.length; i++) {
+        //     let parentElm = elms[i].closest("li");
+
+        //     if (!elms[i].dataset.listenerLoad) {
+        //         elms[i].dataset.listenerLoad = true;
+
+        //         elms[i].addEventListener("load", () => {
+        //             let style = getComputedStyle(parentElm, "");
+        //             var bgColor= style.getPropertyValue("background-color");
+        //             let bgColorConvert = this.convertColor(bgColor);
+
+        //             this.findSVGElements(elms[i], bgColorConvert);
+        //         });
+        //     }
+
+        //     if (i == elms.length - 1) {
+        //         // this.loadEnd();
+        //         let isLoading = false;
+        //         return isLoading;
+        //     }
+        // }
+
+        if (!elms.dataset.listenerLoad) {
+            elms.dataset.listenerLoad = true;
+
+            elms.addEventListener("load", () => {
+                // let bgColorConvert = this.convertColor(bgColor);
+
+                // this.findSVGElements(elms, bgColorConvert);
+                this.findSVGElements(elms, bgColor);
+            });
         }
     }
 
@@ -198,14 +240,6 @@ class ColorCore {
         }, (err) => {
             console.log(`Async: Could not copy text: ${err}`);
         })
-    }
-
-    checkLoading() {
-        if (this.load) {
-            setTimeout(() => {
-                this.checkLoading();
-            },100);
-        }
     }
 
     loadStart() {
